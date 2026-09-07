@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Odoo
+custom/*.pyc
+logs/*.log
+*.log
+
+# Docker
+pgadmin/
+
+# Odoo core source mirror (VS Code core breakpoints)
+odoo-src/

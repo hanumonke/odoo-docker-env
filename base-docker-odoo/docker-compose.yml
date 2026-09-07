@@ -1,0 +1,71 @@
+version: "3"
+services:
+  odoo:
+    build:
+      context: .
+    container_name: ${PROJECT_NAME:-odoo}
+    command: odoo --dev=all
+    entrypoint:
+      - /debug_entrypoint.sh
+    depends_on:
+      - db
+    ports:
+      - "${HTTP_PORT:-8069}:8069"
+      - "${DEBUGPY_PORT:-5678}:5678"
+    volumes:
+      - odoo-web:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./custom:/mnt/extra-addons
+      - ./logs:/var/log/odoo
+      - ./debug_entrypoint.sh:/debug_entrypoint.sh:ro
+      - ./debug_launcher.py:/mnt/debug_launcher.py:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DEBUGPY=${DEBUGPY:-0}
+      - DEBUGPY_PORT=${DEBUGPY_PORT:-5678}
+      - DEBUGPY_WAIT=${DEBUGPY_WAIT:-1}
+      - HOST=db
+      - PORT=5432
+      - USER=${DB_USER:-odoo}
+      - PASSWORD=${DB_PASSWORD:-odoo}
+    networks:
+      - odoo_net
+    restart: unless-stopped
+
+  db:
+    image: postgres:13
+    container_name: ${PROJECT_NAME:-odoo}_db
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=${DB_USER:-odoo}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-odoo}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - odoo-db:/var/lib/postgresql/data/pgdata
+    networks:
+      - odoo_net
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: ${PROJECT_NAME:-odoo}_pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL:-admin@example.com}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD:-admin}
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    volumes:
+      - pgadmin:/root/.pgadmin
+    networks:
+      - odoo_net
+    depends_on:
+      - db
+    restart: unless-stopped
+
+networks:
+  odoo_net:
+
+volumes:
+  odoo-web:
+  odoo-db:
+  pgadmin:
