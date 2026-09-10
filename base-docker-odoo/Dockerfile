@@ -6,8 +6,8 @@ FROM odoo:17.0
 # odoo-web volume mounted at /var/lib/odoo).
 # Pin ~=1.8 to stay compatible with the VS Code / VSCodium debug adapter.
 USER root
-RUN pip3 install --no-cache-dir "debugpy~=1.8"
+RUN pip3 install --no-cache-dir --break-system-packages "debugpy~=1.8"
 USER odoo
 
 # Install additional dependencies
-# RUN pip3 install -r requirements.txt
+# RUN pip3 install --no-cache-dir --break-system-packages -r requirements.txt

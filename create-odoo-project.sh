@@ -270,18 +270,18 @@ FROM odoo:${ODOO_VERSION}
 # odoo-web volume mounted at /var/lib/odoo).
 # Pin ~=1.8 to stay compatible with the VS Code / VSCodium debug adapter.
 USER root
-RUN pip3 install --no-cache-dir "debugpy~=1.8"
+RUN pip3 install --no-cache-dir --break-system-packages "debugpy~=1.8"
 USER odoo
 
 # Install additional dependencies
-# RUN pip3 install -r requirements.txt
+# RUN pip3 install --no-cache-dir --break-system-packages -r requirements.txt
 EOF
 else
 cat > "$PROJECT_NAME/Dockerfile" << EOF
 FROM odoo:${ODOO_VERSION}
 
 # Install additional dependencies
-# RUN pip3 install -r requirements.txt
+# RUN pip3 install --no-cache-dir --break-system-packages -r requirements.txt
 EOF
 fi
 
@@ -727,7 +727,7 @@ PyCharm remote debugging is not implemented yet.
 1. PyCharm Professional (or Community + `python-debugger` plugin) with a
    "Python Debug Server" run configuration listening on port 5678.
 2. Install `pydevd-pycharm` into the Odoo container:
-   - `pip3 install pydevd-pycharm~=<pycharm_version>`
+   - `pip3 install --break-system-packages pydevd-pycharm~=<pycharm_version>`
 3. In `debug_launcher.py`, replace the `debugpy` block with:
 
    ```python
